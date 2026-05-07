@@ -37,6 +37,18 @@ read -r msg
 if [[ -n "$msg" ]]; then
   git commit -m "$msg"
   git push
+  echo "Pushed! Restoring symlinks..."
+
+  # 提交成功后恢复软链接
+  for dir in "${SYMLINKS[@]}"; do
+    if [[ -d "$dir" ]] && [[ ! -L "$dir" ]]; then
+      target=$(readlink -f "$dir")
+      rm -rf "$dir"
+      ln -s "$target" "$dir"
+      echo "Restored: $dir"
+    fi
+  done
+
   echo "Done!"
 else
   echo "Aborted: no commit message"
