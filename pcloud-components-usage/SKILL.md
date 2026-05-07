@@ -161,6 +161,69 @@ import * as PCloud from '@pointcloud/pcloud-components';
 
 Online docs: https://frank17008.github.io/pcloud-components
 
+## Detailed Component Reference
+
+所有组件的详细文档已内置在 skill 中，位置: `references/docs/组件名.md`
+
+### 表单组件
+
+| 组件 | 文档 |
+|------|------|
+| DForm | `references/docs/DForm.md` |
+| DInput | `references/docs/DInput.md` |
+| DSelect | `references/docs/DSelect.md` |
+| DCascader | `references/docs/DCascader.md` |
+| DTreeSelect | `references/docs/DTreeSelect.md` |
+| DUpload | `references/docs/DUpload.md` |
+| DRangePicker | `references/docs/DRangePicker.md` |
+| DynamicFormItem | `references/docs/DynamicFormItem.md` |
+
+### 数据展示组件
+
+| 组件 | 文档 |
+|------|------|
+| DTable | `references/docs/DTable.md` |
+| NoData | `references/docs/NoData.md` |
+| Loading | `references/docs/Loading.md` |
+| LabelValue | `references/docs/LabelValue.md` |
+| ScrollNumber | `references/docs/ScrollNumber.md` |
+| TypewriterText | `references/docs/TypewriterText.md` |
+| WordCloud | `references/docs/WordCloud.md` |
+| AspectRatio | `references/docs/AspectRatio.md` |
+| AnimatedScrollList | `references/docs/AnimatedScrollList.md` |
+| ErrorBoundary | `references/docs/ErrorBoundary.md` |
+| IconFont | `references/docs/IconFont.md` |
+| IPAddress | `references/docs/IPAddress.md` |
+| OrgTree | `references/docs/OrgTree.md` |
+
+### 模态框组件
+
+| 组件 | 文档 |
+|------|------|
+| DModal | `references/docs/DModal.md` |
+| ModalForm | `references/docs/ModalForm.md` |
+| LoginForm | `references/docs/LoginForm.md` |
+
+### 其他组件
+
+| 组件 | 文档 |
+|------|------|
+| CRUD | `references/docs/CRUD.md` |
+| AdvancedFilter | `references/docs/AdvancedFilter.md` |
+| ContextMenu | `references/docs/ContextMenu.md` |
+| InfiniteScrollList | `references/docs/InfiniteScrollList.md` |
+| PictureCard | `references/docs/PictureCard.md` |
+| SignaturePad | `references/docs/SignaturePad.md` |
+| RndDrag | `references/docs/RndDrag.md` |
+| RCropper | `references/docs/RCropper.md` |
+| AuthComponent | `references/docs/AuthComponent.md` |
+| ColorPicker | `references/docs/ColorPicker.md` |
+| ConfigProvider | `references/docs/ConfigProvider.md` |
+
+### 在线文档
+
+如需最新在线版本: https://frank17008.github.io/pcloud-components
+
 ## Environment Requirements
 
 - React >= 18
