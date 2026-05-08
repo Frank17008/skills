@@ -1,6 +1,6 @@
 ---
 name: pcloud-components-usage
-description: Use when developer mentions pcloud-components. Triggers for: installing @pointcloud/pcloud-components, using components (DForm/DTable/DModal/DSelect/DCascader/etc), documentation, API reference, error troubleshooting, or configuration examples.
+description: "Use when developer mentions pcloud-components. Triggers for: installing @pointcloud/pcloud-components, using components (DForm/DTable/DModal/DSelect/DCascader/etc), documentation, API reference, error troubleshooting, or configuration examples."
 ---
 
 # pcloud-components Usage Guide
@@ -232,7 +232,7 @@ Online docs: https://frank17008.github.io/pcloud-components
 ## Environment Requirements
 
 - React >= 18
-- Ant Design <= 6.x
+- Ant Design ^4.24.16
 - Node >= 16.20.0
 - Modern browsers
 
