@@ -39,6 +39,6 @@ ModalForm 是一个融合了弹窗和表单功能的组合组件，基于 DModal
 
 | 参数       | 说明                             | 类型                                                | 默认值 |
 | ---------- | -------------------------------- | --------------------------------------------------- | ------ |
-| modalProps | 弹窗属性，支持 DModal 的所有属性 | `DModalProps & { onError?: (_error: any) => void }` | -      |
-| formProps  | 表单属性，支持 DForm 的所有属性  | `DFormProps & { values?: any }`                     | -      |
+| modalProps | 弹窗属性，支持 DModal 的所有属性 | [DModalProps](/components/d-modal#dmodalprops)     | -      |
+| formProps  | 表单属性，支持 DForm 的所有属性  | [DFormProps](/components/d-form#dformprops)            | -      |
 | children   | 子元素                           | `ReactNode`                                         | -      |
