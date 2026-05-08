@@ -1,6 +1,6 @@
 ---
 name: pcloud-components-usage
-description: Use when developer needs to install, use, or look up components from @pointcloud/pcloud-components npm package
+description: Use when developer mentions pcloud-components. Triggers for: installing @pointcloud/pcloud-components, using components (DForm/DTable/DModal/DSelect/DCascader/etc), documentation, API reference, error troubleshooting, or configuration examples.
 ---
 
 # pcloud-components Usage Guide
