@@ -227,7 +227,7 @@ Online docs: https://frank17008.github.io/pcloud-components
 
 ### 在线文档
 
-如需最新在线版本: https://frank17008.github.io/pcloud-components
+如需最新在线版本: https://pui-me.vercel.app
 
 ## Environment Requirements
 

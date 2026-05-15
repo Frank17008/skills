@@ -49,61 +49,73 @@ DForm 是基于 Ant Design Form 组件的增强封装，提供了更简洁的表
 
 <code src="./demos/dynamicItemsDemo.tsx" title="动态设置字段" description="通过ref属性配合useForm可以直接操作组件内部的表单项列表，而不用通过外部state手动管理"></code>
 
+## 条件渲染
+
+<code src="./demos/shouldUpdateDemo.tsx" title="条件渲染" description="通过formItemProps.shouldUpdate实现根据表单其他字段的值动态控制表单项的渲染"></code>
+
 ## API
 
 ### DFormProps
 
-| 参数             | 说明                                                                      | 类型                                                         | 默认值     | 版本 |
-| :--------------- | :------------------------------------------------------------------------ | :----------------------------------------------------------- | :--------- | :--- |
-| items            | 表单项数组,可以通过数组的形式添加表单项                                   | `DItemProps[]`                                               | -          |      |
-| defaultItemProps | 统一设置 items 的默认属性                                                 | `DItemProps`                                                 | -          |      |
-| layout           | 布局方式 新增了行内垂直布局方式 inlineVertical                            | `'inline' \| 'horizontal' \| 'vertical' \| 'inlineVertical'` | horizontal |      |
-| children         | children 方式添加表单项,如果同时设置了 items，则 children 在 items 下面） | `ReactNode \| ReactNode[]`                                   | -          |      |
+| 参数             | 说明                                                                    | 类型                                                                   | 默认值       | 版本 |
+| :--------------- | :---------------------------------------------------------------------- | :--------------------------------------------------------------------- | :----------- | :--- |
+| items            | 表单项数组,可以通过数组的形式添加表单项                                 | `DItemProps[]`                                                         | -            |      |
+| defaultItemProps | 统一设置 items 的默认属性                                               | `DItemProps`                                                           | -            |      |
+| layout           | 布局方式                                                                | `'inline' \| 'horizontal' \| 'vertical' \| 'inlineVertical' \| 'grid'` | `horizontal` |      |
+| children         | children 方式添加表单项,如果同时设置了 items，则 children 在 items 下面 | `ReactNode \| ReactNode[]`                                             | -            |      |
+| className        | 额外的 className                                                        | `string`                                                               | -            |      |
 
-其他属性同 antd Form 组件，详见：https://4x-ant-design.antgroup.com/components/form-cn/#API
+其他属性继承 antd Form 组件，详见[Form API](https://4x-ant-design.antgroup.com/components/form-cn/#Form)
 
 ### DItemProps
 
-| 参数          | 说明                                                    | 类型                                                                                          | 默认值 |
-| :------------ | :------------------------------------------------------ | :-------------------------------------------------------------------------------------------- | :----- |
-| renderType    | [渲染类型](#render-type)                                | `RenderType`                                                                                  | -      |
-| render        | 自定义渲染函数, 仅 renderType 等于 custom、other 时生效 | `(props: ItemProps, formItemProps: FormItemProps, allProps?: InternalItemProps) => ReactNode` | -      |
-| label         | 同 antd Form.Item 的 label                              | `ReactNode`                                                                                   | -      |
-| name          | 同 antd Form.Item 的 name                               | [NamePath](https://4x-ant-design.antgroup.com/components/form-cn/#NamePath)                   | -      |
-| formItemProps | Form.Item 的的其他属性                                  | `FormItemProps & { grid?: Omit<ColProps, 'prefixCls'> }`                                      | -      |
+| 参数          | 说明                                                                                          | 类型                                                                                                   | 默认值 |
+| :------------ | :-------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------- | :----- |
+| renderType    | [渲染类型](#RenderType)                                                                       | `RenderType`                                                                                           | -      |
+| render        | 自定义渲染函数, 仅 renderType 等于 custom、other 时生效                                       | `(props: any, formItemProps: FormItemProps, allProps?: DItemProps) => ReactNode`                       | -      |
+| label         | 同 antd Form.Item 的 label                                                                    | `ReactNode`                                                                                            | -      |
+| name          | 同 antd Form.Item 的 name                                                                     | [NamePath](https://4x-ant-design.antgroup.com/components/form-cn/#NamePath)                            | -      |
+| formItemProps | [Antd Form.Item 的其他属性](https://4x-ant-design.antgroup.com/components/form-cn/#Form.Item) | `FormItemProps & { grid?: GridColProps; shouldUpdate?: boolean \| (prev: any, curr: any) => boolean }` | -      |
+| children      | 子元素，用于 custom/other 类型                                                                | `ReactNode`                                                                                            | -      |
 
-### renderType
+DItemProps 的其他属性根据 renderType 的值来继承; 比如 renderType 为 input 时,会继承 antd Input 的所有属性, 为 select 时,会继承 antd Select 的所有属性, 以此类推;
 
-| RenderType   | 渲染组件           | 类型说明                                                  |
-| :----------- | :----------------- | :-------------------------------------------------------- |
-| dInputs      | `<DInputs />`      | 内置组件                                                  |
-| input        | `<Input />`        | 内置组件                                                  |
-| textArea     | `<TextArea />`     | 内置组件                                                  |
-| password     | `<Password />`     | 内置组件                                                  |
-| inputNumber  | `<InputNumber />`  | 内置组件                                                  |
-| autoComplete | `<AutoComplete />` | 内置组件                                                  |
-| dSelect      | `<DSelect />`      | 内置组件                                                  |
-| select       | `<Select />`       | 内置组件                                                  |
-| dCascader    | `<DCascader />`    | 内置组件                                                  |
-| cascader     | `<Cascader />`     | 内置组件                                                  |
-| dTreeSelect  | `<DTreeSelect />`  | 内置组件                                                  |
-| treeSelect   | `<TreeSelect />`   | 内置组件                                                  |
-| datePicker   | `<DatePicker />`   | 内置组件                                                  |
-| timePicker   | `<TimePicker />`   | 内置组件                                                  |
-| rangePicker  | `<RangePicker />`  | 内置组件                                                  |
-| mentions     | `<Mentions />`     | 内置组件                                                  |
-| checkbox     | `<Checkbox />`     | 内置组件                                                  |
-| radio        | `<Radio />`        | 内置组件                                                  |
-| rate         | `<Rate />`         | 内置组件                                                  |
-| slider       | `<Slider />`       | 内置组件                                                  |
-| switch       | `<Switch />`       | 内置组件                                                  |
-| transfer     | `<Transfer />`     | 内置组件                                                  |
-| upload       | `<Upload />`       | 内置组件                                                  |
-| dUpload      | `<DUpload />`      | 内置组件                                                  |
-| button       | `<Button />`       | 内置组件                                                  |
-| divider      | `<Divider />`      | 内置组件                                                  |
-| custom       | `<Custom />`       | 自定义组件渲染组件                                        |
-| other        | `<Other />`        | 自定义组件渲染组件(包裹在`<Form.Item></Form.Item>`组件中) |
+### RenderType
+
+| RenderType    | 渲染组件                     | 说明                          |
+| :------------ | :--------------------------- | :---------------------------- |
+| dInput        | `<DInput />`                 | 增强版输入框组件              |
+| ipAddress     | `<IPAddress />`              | IP 地址输入组件               |
+| input         | `<Input />`                  | antd 输入框组件               |
+| textArea      | `<Input.TextArea />`         | antd 文本域组件               |
+| password      | `<Input.Password />`         | antd 密码输入组件             |
+| inputNumber   | `<InputNumber />`            | antd 数字输入框组件           |
+| autoComplete  | `<AutoComplete />`           | antd 自动完成组件             |
+| dSelect       | `<DSelect />`                | 增强版下拉选择组件            |
+| select        | `<Select />`                 | antd 下拉选择组件             |
+| dCascader     | `<DCascader />`              | 增强版级联选择组件            |
+| cascader      | `<Cascader />`               | antd 级联选择组件             |
+| dTreeSelect   | `<DTreeSelect />`            | 增强版树选择组件              |
+| treeSelect    | `<TreeSelect />`             | antd 树选择组件               |
+| datePicker    | `<DatePicker />`             | antd 日期选择器组件           |
+| dRangePicker  | `<DRangePicker />`           | 增强版日期范围选择器组件      |
+| timePicker    | `<TimePicker />`             | antd 时间选择器组件           |
+| rangePicker   | `<DatePicker.RangePicker />` | antd 日期范围选择器组件       |
+| mentions      | `<Mentions />`               | antd 提及组件                 |
+| checkbox      | `<Checkbox />`               | antd 复选框组件               |
+| checkboxGroup | `<Checkbox.Group />`         | antd 复选框组组件             |
+| radio         | `<Radio />`                  | antd 单选框组件               |
+| radioGroup    | `<Radio.Group />`            | antd 单选框组组件             |
+| rate          | `<Rate />`                   | antd 评分组件                 |
+| slider        | `<Slider />`                 | antd 滑动输入条组件           |
+| switch        | `<Switch />`                 | antd 开关组件                 |
+| transfer      | `<Transfer />`               | antd 穿梭框组件               |
+| upload        | `<Upload />`                 | antd 上传组件                 |
+| dUpload       | `<DUpload />`                | 增强版上传组件                |
+| button        | `<Button />`                 | antd 按钮组件                 |
+| divider       | `<Divider />`                | antd 分割线组件               |
+| custom        | 自定义渲染                   | 渲染结果不包含在 Form.Item 中 |
+| other         | 自定义渲染                   | 渲染结果包含在 Form.Item 中   |
 
 ### ref(组件引用)
 

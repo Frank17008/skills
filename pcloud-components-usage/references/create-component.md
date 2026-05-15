@@ -11,9 +11,9 @@ src/
 └── YourComponent/
     ├── index.tsx          # 主组件文件 (必需)
     ├── index.less         # 样式文件 (可选)
-    ├── index.zh-CN.md    # 中文文档 (必需)
+    ├── index.zh-CN.md    # 中文文档 (可选)
     ├── interface.ts      # TypeScript 接口 (推荐)
-    ├── demos/             # 示例目录 (必需)
+    ├── demos/             # 示例目录 (可选)
     │   ├── demo1.tsx
     │   └── demo2.tsx
     ├── __tests__/         # 测试目录 (可选)
@@ -28,8 +28,8 @@ src/
 创建 `src/YourComponent/index.tsx`:
 
 ```tsx
-import React from "react";
-import "./index.less";
+import React from 'react';
+import './index.less';
 
 export interface YourComponentProps {
   /** 类名 */
@@ -44,7 +44,7 @@ export const YourComponent: React.FC<YourComponentProps> = (props) => {
   const { className, style, children } = props;
 
   return (
-    <div className={`your-component ${className || ""}`} style={style}>
+    <div className={`your-component ${className || ''}`} style={style}>
       {children}
     </div>
   );
@@ -58,7 +58,7 @@ export default YourComponent;
 创建 `src/YourComponent/index.less`:
 
 ```less
-@prefix: ~"your-component";
+@prefix: ~'your-component';
 
 .@{prefix} {
   // 样式内容
@@ -86,10 +86,14 @@ export interface YourComponentRef {
 创建 `src/YourComponent/demos/demo1.tsx`:
 
 ```tsx
-import React from "react";
-import YourComponent from "../index";
+import React from 'react';
+import YourComponent from '../index';
 
-export default () => <YourComponent>示例内容</YourComponent>;
+export default () => (
+  <YourComponent>
+    示例内容
+  </YourComponent>
+);
 ```
 
 ### 5. 创建单元测试 (推荐)
@@ -97,19 +101,19 @@ export default () => <YourComponent>示例内容</YourComponent>;
 创建 `src/YourComponent/__tests__/index.test.tsx`:
 
 ```tsx
-import React from "react";
-import { render, screen } from "@testing-library/react";
-import YourComponent from "../index";
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import YourComponent from '../index';
 
-describe("YourComponent", () => {
-  it("renders correctly", () => {
+describe('YourComponent', () => {
+  it('renders correctly', () => {
     render(<YourComponent>Test</YourComponent>);
-    expect(screen.getByText("Test")).toBeInTheDocument();
+    expect(screen.getByText('Test')).toBeInTheDocument();
   });
 });
 ```
 
-### 6. 创建中文文档 (必需)
+### 6. 创建中文文档 (可选)
 
 创建 `src/YourComponent/index.zh-CN.md`:
 
@@ -127,9 +131,9 @@ describe("YourComponent", () => {
 
 ## API
 
-| 属性     | 说明     | 类型   | 默认值 |
-| -------- | -------- | ------ | ------ |
-| propName | 属性说明 | string | -      |
+| 属性 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| propName | 属性说明 | string | - |
 
 ## 注意事项
 
@@ -142,7 +146,7 @@ describe("YourComponent", () => {
 
 ```typescript
 // 添加导出
-export { default as YourComponent } from "./YourComponent";
+export { default as YourComponent } from './YourComponent';
 ```
 
 ## 组件设计原则
@@ -168,9 +172,9 @@ interface Props {
 
 // 避免的命名
 interface Props {
-  isDisabled?: boolean; // 使用 disabled
-  onValueChange?: void; // 使用 onChange
-  customClass?: string; // 使用 className
+  isDisabled?: boolean;      // 使用 disabled
+  onValueChange?: void;      // 使用 onChange
+  customClass?: string;      // 使用 className
 }
 ```
 
@@ -184,7 +188,7 @@ interface Props {
 
 ```tsx
 // Props 校验
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 Component.propTypes = {
   // 使用 PropTypes
@@ -247,7 +251,6 @@ git commit -m 'feat: 新增 YourComponent 组件'
 ```
 
 类型:
-
 - `feat`: 新功能
 - `fix`: 修复
 - `docs`: 文档

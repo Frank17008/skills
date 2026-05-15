@@ -21,7 +21,7 @@ CRUD 是基于 DForm 和 DTable 的高阶组件，用于快速实现数据的增
 - ✏️ 内置编辑功能，自动回显数据到表单
 - 🗑️ 内置删除功能，支持单条删除和批量删除
 - 👁️ 内置详情查看功能，支持模态框展示
-- 🎨 支持自定义操作栏和操作列
+- 🎨 支持自定义操作栏和扩展操作列按钮
 - 🔄 智能化刷新策略,支持自主配置
 - 📋 支持表格行选择和批量操作
 - ⚙️ 支持手动刷新,全屏及列设置（显示/隐藏和拖拽排序）
@@ -29,13 +29,15 @@ CRUD 是基于 DForm 和 DTable 的高阶组件，用于快速实现数据的增
 
 ## 基础用法
 
-<!-- <code src="./demos/test.tsx" title="自定义操作列" description="通过自定义 actionColumn 配置，实现自定义操作列"></code> -->
-
 <code src="./demos/basicDemo.tsx" title="基础用法" description="整合DForm和DTable组件，实现数据的增删改查功能"></code>
 
 ## 自定义操作列
 
 <code src="./demos/customActions.tsx" title="自定义操作列" description="通过自定义 `actionColumn` 配置，实现自定义操作列; 同时也可以通过`ref`调用组件内部的新增,编辑及删除按钮的操作逻辑"></code>
+
+## 更多操作列
+
+<code src="./demos/moreActionColumnDemo.tsx" title="更多操作列" description="通过 `moreActionColumn` 配置自定义更多操作按钮，点击更多按钮弹出 Popover 展示自定义内容，支持通过 render 函数获取当前行数据 record"></code>
 
 ## 立即检索
 
@@ -88,6 +90,7 @@ CRUD 是基于 DForm 和 DTable 的高阶组件，用于快速实现数据的增
 | showView               | 是否显示操作列详情                                | `boolean`                                                                                          | `true`                                        |
 | viewButtonText         | 行查看按钮文本                                    | `string`                                                                                           | `'查看'`                                      |
 | viewButtonProps        | 行查看按钮配置                                    | 同 Antd [ButtonProps](https://4x-ant-design.antgroup.com/components/button-cn/#API)                | -                                             |
+| moreActionColumn       | 更多操作列自定义渲染，配置后自动显示更多按钮     | [MoreActionColumnRender](#moreactioncolumnrender)                                                 | -                                             |
 | actionBar              | 自定义操作栏                                      | `ReactNode`                                                                                        | -                                             |
 | onRefresh              | 数据刷新回调                                      | `() => void`                                                                                       | -                                             |
 | crudApi                | CRUD 操作 API 配置                                | [CRUD API](#crud-api)                                                                              | -                                             |
@@ -114,6 +117,15 @@ CRUD 是基于 DForm 和 DTable 的高阶组件，用于快速实现数据的增
 | keepPage         | 是否保持当前页码，false 则回到第一页 | `boolean` |
 
 `keepSearchValues`在所有场景下默认为 `true`，表示保留当前的检索条件，其优先级高于 `keepPage`;若 `keepSearchValues` 为 `false`，则 `keepPage` 无效, 因为当检索条件改变时，用户自然期望自动回到第一页, 是否保留`keepPage`将无任何意义。
+
+### MoreActionColumnRender
+
+| 参数   | 说明       | 类型                                    |
+| ------ | ---------- | --------------------------------------- |
+| text   | 单元格文本 | `any`                                   |
+| record | 当前行数据 | `Record<string, any>`                  |
+
+返回值为 `ReactNode`，可以在 Popover 中展示自定义内容。配置后操作列会自动显示"更多"按钮，点击按钮弹出 Popover 展示 render 函数返回的内容。
 
 ### CRUDRefProps
 
