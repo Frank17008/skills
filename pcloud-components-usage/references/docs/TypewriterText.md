@@ -1,77 +1,120 @@
----
-title: TypewriterText
-description: 打字机风格文本展示组件
-keywords: ['typewriter', 'text', 'animation', '打字', '文本展示']
-demo:
-  cols: 2
-tocDepth: 2
-nav:
-  title: 组件
-  path: /components
-group:
-  title: 数据展示
-  order: 4
----
+# TypewriterText
 
-# TypewriterText 打字文本组件
+打字机风格文本展示组件，支持多段文案、随机速度、回删动画、循环播放，以及命令式控制方法。
 
-TypewriterText 提供轻量的打字机文本动画，支持多段文案、随机速度、循环播放等能力，配合命令式控制方法可在引导页、版本更新提示、活动营销等场景中快速输出吸睛的动效文案。
+## 基础用法
 
-## 组件特性
+```tsx
+import { TypewriterText } from '@pointcloud/pcloud-components';
 
-- 📜 支持字符串与字符串数组输入，可按顺序循环展示多段文案
-- ↩️ 识别 `\n` / `\r\n` 换行符，自动插入换行并让光标随之到新行
-- ⚡️ 自定义输入/删除速度，支持随机区间，真实还原打字机体验
-- ⏳ 精细化节奏控制，包含首段延时、删除前停顿、循环次数等配置
-- ✋ 暴露 pause/resume/reset/skip 方法，方便外部交互组件联动
-- ♿️ 支持配置 `aria-live`，兼顾屏幕阅读器播报体验
-- 🎯 光标样式、闪烁节奏与样式完全可定制
+function BasicDemo() {
+  return <TypewriterText text="pcloud-components 带来开箱即用的打字机文本体验。" startDelay={200} cursorChar="_" />;
+}
 
-## 基础使用
+export default BasicDemo;
+```
 
-<code src="./demos/basicDemo.tsx" title="基础演示"></code>
+## 回删动画
 
-## 自定义鼠标样式
+```tsx
+import { TypewriterText } from '@pointcloud/pcloud-components';
 
-<code src="./demos/cursorDemo.tsx" title="特殊鼠标样式"></code>
+const statements = ['提供响应式信息流', '按需随机速度输入', '支持字符串与字符串数组输入，可按顺序循环展示多段文案', '每段文案回删重新书写'];
 
-## 多段文本与循环
+function BackspaceDemo() {
+  return (
+    <TypewriterText
+      text={statements}
+      backspace
+      loop
+      speed={{ min: 30, max: 80 }}
+      deleteSpeed={45}
+      pauseBeforeDelete={800}
+      cursorBlinkSpeed={400}
+      style={{ color: '#1677ff' }}
+    />
+  );
+}
 
-<code src="./demos/multiTextDemo.tsx" title="多段循环/多行文本"></code>
-
-## 回删与随机速度
-
-<code src="./demos/backspaceDemo.tsx" title="回删动画"></code>
+export default BackspaceDemo;
+```
 
 ## 命令式控制
 
-<code src="./demos/controlDemo.tsx" title="命令式控制 (暂停/继续/重置)"></code>
+```tsx
+import { useRef } from 'react';
+import { Button, Space } from 'antd';
+import { TypewriterText, type TypewriterTextHandle } from '@pointcloud/pcloud-components';
+
+const releaseNotes = ['v2.6.6 · 组件协议统一', '性能监控埋点增强', '全链路国际化支持'];
+
+function ControlDemo() {
+  const typewriterRef = useRef<TypewriterTextHandle | null>(null);
+
+  function handlePause() {
+    typewriterRef.current?.pause();
+  }
+
+  function handleResume() {
+    typewriterRef.current?.resume();
+  }
+
+  function handleSkip() {
+    typewriterRef.current?.skip();
+  }
+
+  function handleReset() {
+    typewriterRef.current?.reset();
+  }
+
+  return (
+    <div>
+      <Space size="small">
+        <Button onClick={handlePause}>暂停</Button>
+        <Button onClick={handleResume}>继续</Button>
+        <Button onClick={handleSkip}>下一条</Button>
+        <Button type="primary" onClick={handleReset}>
+          重置
+        </Button>
+      </Space>
+      <hr />
+      <TypewriterText ref={typewriterRef} text={releaseNotes} loop startDelay={400} style={{ marginBottom: 12 }} />
+    </div>
+  );
+}
+
+export default ControlDemo;
+```
 
 ## API
 
-### TypewriterText
+### TypewriterTextProps
 
-| 参数              | 说明                             | 类型                                      | 默认值  |
-| ----------------- | -------------------------------- | ----------------------------------------- | ------- |
-| text              | 展示文案；支持字符串或字符串数组 | `string \| string[]`                      | ——      |
-| speed             | 打字速度 (ms) 或随机区间         | `number \| { min: number; max: number }`  | `50`    |
-| deleteSpeed       | 删除速度 (ms)                    | `number`                                  | `30`    |
-| backspace         | 是否启用回删效果                 | `boolean`                                 | `false` |
-| pauseBeforeDelete | 回删前的停顿时间 (ms)            | `number`                                  | `600`   |
-| startDelay        | 每段文本开头的延时 (ms)          | `number`                                  | `0`     |
-| loop              | 是否循环；数字表示循环次数       | `boolean \| number`                       | `false` |
-| cursor            | 是否展示光标                     | `boolean`                                 | `true`  |
-| cursorChar        | 光标字符                         | `string` \| `ReactNode`                   | \|      |
-| cursorBlinkSpeed  | 光标闪烁节奏 (ms)                | `number`                                  | `600`   |
-| onStep            | 每次新增字符时触发               | `(index: number, output: string) => void` |         |
-| onComplete        | 单段文本输入结束时触发           | `() => void`                              |         |
-| ...rest           | 透传 `HTMLSpanElement` 属性      | ——                                        |         |
+| 参数         | 说明                           | 类型                                      | 默认值    |
+|-------------|-------------------------------|-----------------------------------------|---------|
+| text        | 展示文案；支持字符串或字符串数组 | `string \| string[]`                   | ——      |
+| speed       | 打字速度 (ms) 或随机区间         | `number \| { min: number; max: number }` | `50`    |
+| deleteSpeed | 删除速度 (ms)                  | `number`                                | `30`    |
+| backspace   | 是否启用回删效果               | `boolean`                               | `false` |
+| pauseBeforeDelete | 回删前的停顿时间 (ms)  | `number`                                | `600`   |
+| startDelay  | 每段文本开头的延时 (ms)         | `number`                                | `0`     |
+| loop        | 是否循环；数字表示循环次数      | `boolean \| number`                     | `false` |
+| cursor      | 是否展示光标                   | `boolean`                               | `true`  |
+| cursorChar  | 光标字符                       | `string \| ReactNode`                   | `\|`    |
+| cursorBlinkSpeed | 光标闪烁节奏 (ms)        | `number`                                | `600`   |
+| onStep      | 每次新增字符时触发             | `(index: number, output: string) => void` | ——    |
+| onComplete  | 单段文本输入结束时触发          | `() => void`                            | ——      |
+| ...rest     | 透传 `HTMLSpanElement` 属性    | ——                                      | ——      |
 
 ### TypewriterTextHandle
 
-| 方法   | 说明                       | 类型         |
-| ------ | -------------------------- | ------------ |
+| 方法  | 说明                       | 类型         |
+|------|--------------------------|------------|
 | pause  | 暂停动画                   | `() => void` |
 | resume | 继续动画                   | `() => void` |
 | reset  | 重置到第一段重新播放       | `() => void` |
 | skip   | 跳过当前段落直接进入下一段 | `() => void` |
+
+## 组件依赖
+
+无

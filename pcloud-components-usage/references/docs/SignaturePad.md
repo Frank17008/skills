@@ -1,51 +1,83 @@
----
-title: SignaturePad 电子签名
-description: 用于在线手写签名的组件
-keywords: ['签名', 'signature', '手写']
-demo:
-  cols: 2
-tocDepth: 3
-nav:
-  title: 组件
-  path: /components
-group:
-  title: 业务组件
----
-
-# SignaturePad 电子签名
+# SignaturePad
 
 在线手写签名组件，支持触屏和鼠标书写，可用于电子合同、文档签署等场景。
 
-## 组件特性
+## 基础用法
 
-- 📝 支持手写和鼠标书写
-- 📱 适配移动端触摸屏
-- 🎨 可自定义笔画颜色和粗细
-- 🖼️ 可导出签名图片
-- 🔄 支持清除重写
-- ⚙️ 丰富的自定义配置
+```tsx
+import { SignaturePad } from '@pointcloud/pcloud-components';
+import { message } from 'antd';
 
-## 代码演示
+export default () => {
+  const handleDone = (dataUrl: string) => {
+    message.success('签名完成！');
+    console.log('签名图片URL:', dataUrl);
+  };
 
-### 基础用法
+  return <SignaturePad width={600} height={200} onDone={handleDone} />;
+};
+```
 
-最简单的签名板用法。
+## 回显和编辑签名
 
-<code src="./demos/demo1.tsx"></code>
+```tsx
+import { SignaturePad } from '@pointcloud/pcloud-components';
+import type { SignaturePadHandle } from '@pointcloud/pcloud-components';
+import { Button, Space, message } from 'antd';
+import { useRef, useState } from 'react';
 
-### 自定义样式
+export default () => {
+  const [previewUrl, setPreviewUrl] = useState<string>();
+  const signaturePadRef = useRef<SignaturePadHandle>(null);
 
-可以自定义笔画颜色、粗细和背景色等。
+  const handleDone = (dataUrl: string) => {
+    setPreviewUrl(dataUrl);
+    message.success('签名已更新！');
+  };
 
-<code src="./demos/demo2.tsx"></code>
+  const handleReset = () => {
+    signaturePadRef.current?.clear();
+    setPreviewUrl(undefined);
+  };
 
-### 回显和编辑签名
+  return (
+    <Space direction="vertical" size="large" style={{ width: '100%' }}>
+      <div style={{ border: '1px solid #d9d9d9', padding: 16, borderRadius: 8 }}>
+        <h4>演示场景：</h4>
+        <p>1. 点击"完成"按钮保存第一次签名</p>
+        <p>2. 点击"重新签名"，将之前的签名作为背景重新签名</p>
+        <p>3. 可以在已有签名的基础上继续修改</p>
+      </div>
 
-支持加载已有签名并在其基础上继续编辑。
+      <SignaturePad ref={signaturePadRef} width={600} height={200} defaultValue={previewUrl} onDone={handleDone} />
 
-<code src="./demos/demo3.tsx"></code>
+      <Space>
+        <Button onClick={handleReset} disabled={!previewUrl}>
+          重新签名
+        </Button>
+        {previewUrl && (
+          <div style={{ marginLeft: 16 }}>
+            <p>签名预览：</p>
+            <img
+              src={previewUrl}
+              alt="签名预览"
+              style={{
+                maxWidth: '100%',
+                border: '1px solid #d9d9d9',
+                borderRadius: 4,
+              }}
+            />
+          </div>
+        )}
+      </Space>
+    </Space>
+  );
+};
+```
 
 ## API
+
+### Props
 
 | 参数            | 说明                                   | 类型                        | 默认值      |
 | --------------- | -------------------------------------- | --------------------------- | ----------- |
@@ -63,93 +95,13 @@ group:
 | style           | 自定义样式                             | `CSSProperties`             | -           |
 | prefixCls       | 自定义前缀，一般不需要设置             | `string`                    | -           |
 
-### Ref 实例方法
+### Ref 实例方法 (SignaturePadHandle)
 
 | 名称       | 说明                                                       | 类型                        |
 | ---------- | ---------------------------------------------------------- | --------------------------- |
 | clear      | 清除画布内容                                               | `() => void`                |
 | getDataURL | 获取签名图片的 base64 数据，如果画布不存在则返回 undefined | `() => string \| undefined` |
 
-注意：getDataURL 方法返回的是 PNG 格式的 base64 图片数据。
+## 组件依赖
 
-## FAQ
-
-### 1. 如何获取签名图片？
-
-使用 `onDone` 回调或者 `Ref`实例中的`getDataURL`方法可以获取签名的 base64 图片数据：
-
-```tsx | pure
-<SignaturePad
-  onDone={(dataUrl) => {
-    // 可以直接用于显示
-    const img = new Image();
-    img.src = dataUrl;
-    // 或者下载为文件
-    const link = document.createElement('a');
-    link.download = 'signature.png';
-    link.href = dataUrl;
-    link.click();
-  }}
-/>
-```
-
-```tsx | pure
-const getUrl = () => {
-  signaturePadRef.current?.getDataURL();
-};
-<SignaturePad ref={signaturePadRef} />;
-```
-
-### 2. 如何清除签名？
-
-有两种方式：
-
-1. 使用内置的清除按钮（默认显示）
-2. 使用 ref 获取组件实例，调用清除方法
-
-```tsx | pure
-import { useRef } from 'react';
-import type { SignaturePadHandle } from '@pointcloud/pcloud-components';
-
-const Demo = () => {
-  const signaturePadRef = useRef<SignaturePadHandle>(null);
-
-  const handleClear = () => {
-    signaturePadRef.current?.clear();
-  };
-
-  return <SignaturePad ref={signaturePadRef} />;
-};
-```
-
-加载的图片会自动按比例缩放并居中显示。你可以在已有签名的基础上继续签名或修改。
-
-### 3. 如何调整画布大小以适应容器？
-
-可以结合 ResizeObserver 来实现自适应大小：
-
-```tsx | pure
-const Demo = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [size, setSize] = useState({ width: 600, height: 200 });
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const observer = new ResizeObserver((entries) => {
-      const { width, height } = entries[0].contentRect;
-      setSize({ width, height });
-    });
-
-    observer.observe(container);
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div ref={containerRef} style={{ width: '100%', height: '300px' }}>
-      <SignaturePad width={size.width} height={size.height} />
-    </div>
-  );
-};
-```
+无

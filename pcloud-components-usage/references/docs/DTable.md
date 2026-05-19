@@ -1,79 +1,115 @@
----
-title: DTable
-description: 基于 antd 4.24.10 Table 的二次封装组件
-tocDepth: 2
-nav:
-  title: 组件
-  path: /components
-group:
-  title: 业务组件
----
+# DTable 增强表格组件
 
-# DTable 表格组件
-
-DTable 是基于 Ant Design Table 组件的增强封装，专注于简化数据加载、分页处理和样式定制，提供自动分页加载、异步数据处理等功能，适用于需要展示大量结构化数据的业务场景。
-
-## 组件特性
-
-- 📊 数据加载优化，支持表格数据异步加载和自动分页处理
-- ⚡ 智能分页管理，分页变化时自动调用加载函数
-- 🎨 样式优化增强，默认提供更好的滚动体验和加载效果
-- 🧩 灵活列配置，支持统一设置列属性和独立操作列
-- 🎯 表单集成友好，轻松集成到各类表单场景中
+基于 Ant Design Table 的增强封装，支持自动分页加载、异步数据处理、统一列配置和操作列。
 
 ## 基础用法
 
-<code src="./demos/basicDemo.tsx" title="基础用法" description="设置loadMore属性即可自动加载表格数据，分页变化时会自动调用该函数，如果在外部监听了分页的onChange事件，则不会触发loadMore，但如果外部onChange返回值为undefined则正常触loadMore"></code>
+```tsx
+import React from 'react';
+import { DTable, DTableProps } from '@pointcloud/pcloud-components';
 
-## 统一设置列配置
+export default function BasicDemo() {
+  const columns: DTableProps['columns'] = [
+    { dataIndex: 'id', title: 'ID' },
+    { dataIndex: 'name', title: '名称' },
+    { dataIndex: 'date', title: '时间' },
+  ];
 
-<code src="./demos/columnsPropDemo.tsx" title="统一设置列配置" description="columnsProp可以用来统一设置列的基本属性,其设置会被columns中同名属性覆盖"></code>
+  const loadMore = (params: any) => {
+    const { current = 1, size = 10 } = params;
+    const records = Array.from({ length: size }, (_, i) => ({
+      id: (current - 1) * size + i + 1,
+      name: '数据' + ((current - 1) * size + i + 1),
+      date: '2024-01-01',
+    }));
+    return Promise.resolve({ total: 50, records });
+  };
 
-## 添加操作列
+  return (
+    <div style={{ height: 400 }}>
+      <DTable style={{ height: '100%' }} columns={columns} loadMore={loadMore} />
+    </div>
+  );
+}
+```
 
-<code src="./demos/actionColumnDemo.tsx" title="添加操作列" description="actionColumn可以在列的最后添加一列操作列，可以是一个column对象，也可以是一个column render函数,该列默认拥有{ width:140, title:'操作', dataIndex:'action' }属性" ></code>
+## 操作列
 
-## 指定额外的请求参数
+通过 actionColumn 在列的最后添加操作列。
 
-<code src="./demos/extraParamsDemo.tsx" title="指定额外的请求参数" description="extraParams可以指定current和size以外的其他参数,当extraParams发生变化时，自动使用默认分页参数调用loadMore方法" ></code>
+```tsx
+import React from 'react';
+import { Button } from 'antd';
+import { DTable, DTableProps } from '@pointcloud/pcloud-components';
 
-## 显示错误信息
+export default function ActionColumnDemo() {
+  const columns: DTableProps['columns'] = [
+    { dataIndex: 'id', title: 'ID' },
+    { dataIndex: 'name', title: '名称' },
+  ];
 
-<code src="./demos/errorMsgDemo.tsx" title="显示错误信息" description="showErrorMsg可以在loadMore发生错误显示相应的提示信息,可以是布尔值（true按默认规则显示错误信息，false不显示），也可以是一个返回字符串的函数" ></code>
+  const loadMore = (params: any) => {
+    const { current = 1, size = 10 } = params;
+    const records = Array.from({ length: size }, (_, i) => ({
+      id: (current - 1) * size + i + 1,
+      name: '数据' + ((current - 1) * size + i + 1),
+    }));
+    return Promise.resolve({ total: 50, records });
+  };
+
+  return (
+    <DTable
+      style={{ height: 400 }}
+      columns={columns}
+      loadMore={loadMore}
+      actionColumn={{
+        title: '操作',
+        render: (text, record) => (
+          <>
+            <Button type="link" size="small">编辑</Button>
+            <Button type="link" size="small" danger>删除</Button>
+          </>
+        ),
+      }}
+    />
+  );
+}
+```
 
 ## API
 
 ### DTableProps
 
-| 参数               | 说明                                                                                                | 类型                                                        | 默认值                            |
-| ------------------ | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | --------------------------------- |
-| loadMore           | 表格数据的加载函数,在表格创建、分页变化、额外参数变化时自动运行，如果设置该属性，则 dataSource 失效 | `(params?: TableParamsProps) => Promise<DTableSourceProps>` | -                                 |
-| defaultColumnProps | 表格列的基础默认配置,默认所有列居中，表头文字超出显示省略号，详见 antd columns                      | `ColumnsType[]`                                             | { align: 'center',ellipsis: true} |
-| actionColumn       | 操作列配置,可以是一个普通列配置对象，也可以是一个 columns 的 render 函数                            | `ColumnType<any> \| ColumnType<any>['render']`              | -                                 |
-| showErrorMsg       | 加载数据失败时是否显示错误信息（仅 loadMore 可用时生效）                                            | `boolean \| (err:any) => string`                            | true                              |
-| extraParams        | 额外的请求参数,（仅 loadMore 可用时生效）                                                           | `TableParamsProps`                                          | -                                 |
-| autoSerialNumber   | 首列自动展示序号                                                                                    | `boolean`                                                   | false                             |
+| 参数 | 说明 | 类型 | 默认值 |
+|-----|-----|-----|-------|
+| loadMore | 表格数据加载函数 | `(params?: TableParamsProps) => Promise<DTableSourceProps>` | - |
+| defaultColumnProps | 表格列的基础默认配置，默认居中、文字超出省略 | `TableColumnType` | `{ align: 'center', ellipsis: true }` |
+| actionColumn | 操作列配置 | `TableColumnType \| (text, record) => ReactNode` | - |
+| showErrorMsg | 加载失败时显示错误信息 | `boolean \| (err) => string` | `true` |
+| extraParams | 额外的请求参数 | `TableParamsProps` | - |
+| autoSerialNumber | 首列自动展示序号 | `boolean` | `false` |
+| columns | 列配置 | `ColumnsType` | - |
+
+继承 antd Table 所有属性。
 
 ### DTableSourceProps
 
-| 参数    | 说明                                               | 类型       | 默认值 |
-| ------- | -------------------------------------------------- | ---------- | ------ |
-| records | 表格数据列表，等同于 antd table 的 datasource 属性 | `object[]` | -      |
-| total   | 当前请求参数下的列表总数（用于分页）               | `number`   | -      |
+| 参数 | 说明 | 类型 |
+|-----|-----|-----|
+| records | 表格数据列表 | `object[]` |
+| total | 列表总数（用于分页） | `number` |
 
 ### TableParamsProps
 
-| 参数    | 说明     | 类型     | 默认值 |
-| ------- | -------- | -------- | ------ |
-| current | 当前页码 | `number` | 1      |
-| size    | 分页大小 | `number` | 10     |
+| 参数 | 说明 | 类型 | 默认值 |
+|-----|-----|-----|-------|
+| current | 当前页码 | `number` | `1` |
+| size | 分页大小 | `number` | `10` |
 
 ### Methods
 
-| 方法名             | 说明             | 类型                                                     |
-| ------------------ | ---------------- | -------------------------------------------------------- |
-| refresh            | 手动刷新表格数据 | ([TableParamsProps](#tableparamsprops)) => void          |
-| refreshToPage      | 刷新到指定页码   | `(page: number) => void`                                 |
-| getPaginationState | 获取分页状态     | `() => ({current: number, size: number, total: number})` |
-
-其他属性同 antd Table 组件，详见：https://4x-ant-design.antgroup.com/components/table-cn/#API
+| 方法名 | 说明 | 类型 |
+|-------|-----|-----|
+| refresh | 手动刷新表格数据 | `(params?: TableParamsProps) => void` |
+| refreshToPage | 刷新到指定页码 | `(page: number) => void` |
+| getPaginationState | 获取分页状态 | `() => { current, size, total }` |

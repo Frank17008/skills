@@ -1,41 +1,42 @@
----
-title: NoData
-nav:
-  title: 组件
-  path: /components
-group:
-  title: 业务组件
----
+# NoData 空状态
 
-# NoData 空状态组件
+空状态展示组件。
 
-NoData 是一个用于展示空状态的组件，当数据为空时提供友好的提示信息和默认插图，帮助用户理解当前无数据的情况，适用于列表、搜索结果、数据加载等各种需要空状态提示的场景。
+## 基础用法
 
-## 组件特性
+```tsx
+import React from 'react';
+import { NoData } from '@pointcloud/pcloud-components';
 
-- 🖼️ 默认空状态插图，提供直观的视觉提示
-- 🎨 文本自定义支持，可灵活配置提示文字
-- 🖼️ 图片自定义支持，支持替换默认插图
-- 🎯 居中定位布局，自动居中显示在容器中央
-- 🧩 轻量级实现，无额外依赖，性能优秀
+export default () => {
+  return (
+    <div style={{ height: 200 }}>
+      <NoData />
+    </div>
+  );
+};
+```
 
-## 使用
+## 自定义文本和图片
 
-<code src="./demos/demo1.tsx" ></code>
+```tsx
+import React from 'react';
+import { NoData } from '@pointcloud/pcloud-components';
 
-## 自定义空文本描述
-
-<code src="./demos/demo2.tsx" ></code>
-
-## 自定义图片
-
-<code src="./demos/demo3.tsx" ></code>
+export default () => {
+  return (
+    <div style={{ height: 200 }}>
+      <NoData emptyText="暂无数据" src="/path/to/image.png" />
+    </div>
+  );
+};
+```
 
 ## API
 
 ### NoDataProps
 
-| 参数名称  | 说明               | 类型     | 默认值             |
-| --------- | ------------------ | -------- | ------------------ |
-| emptyText | 无数据时的文字描述 | `string` | `'暂无结果'`       |
-| src       | 无数据时展示的图片 | `string` | 内置的 base64 图片 |
+| 参数 | 说明 | 类型 | 默认值 |
+|-----|-----|-----|-------|
+| emptyText | 无数据时的文字描述 | `string` | `'暂无结果'` |
+| src | 无数据时展示的图片 | `string` | 内置图片 |

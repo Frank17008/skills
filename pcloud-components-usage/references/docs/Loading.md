@@ -1,58 +1,59 @@
----
-title: Loading
-nav:
-  title: 组件
-  path: /components
-group:
-  title: 业务组件
----
+# Loading 全局加载
 
-# Loading 加载组件
+全局加载组件，单例模式设计，提供函数式调用。
 
-Loading 是一个用于展示加载状态的组件，采用单例模式设计，提供函数式调用方式，支持全局和局部加载状态展示，帮助用户了解当前正在进行的操作，提升用户体验。
+## 基础用法
 
-## 组件特性
+```tsx
+import { Button } from 'antd';
+import { Loading } from '@pointcloud/pcloud-components';
 
-- 🔄 单例模式设计，确保全局唯一实例
-- ⚡ 函数式调用，使用简便快捷
-- 🎯 灵活挂载方式，支持指定容器或全局显示
-- ⏱️ 延迟显示支持，避免短暂加载的闪烁问题
-- 🎨 样式可定制，支持自定义加载提示文字
+export default () => {
+  const onClick = () => {
+    Loading.open();
+    setTimeout(() => {
+      Loading.close();
+    }, 1000);
+  };
 
-## 使用
+  return <Button onClick={onClick}>提交</Button>;
+};
+```
 
-<code src="./demos/demo1.tsx" ></code>
+## 自定义提示文字
 
-## 自定义内容
+```tsx
+import { Button } from 'antd';
+import { Loading } from '@pointcloud/pcloud-components';
 
-<code src="./demos/demo2.tsx" ></code>
+export default () => {
+  const onClick = () => {
+    Loading.open({ tip: '加载中...' });
+    setTimeout(() => Loading.close(), 2000);
+  };
 
-## 指定挂载位置
-
-<code src="./demos/demo3.tsx" ></code>
-
-## hooks 用法
-
-<code src="./demos/demo4.tsx" ></code>
+  return <Button onClick={onClick}>加载中</Button>;
+};
+```
 
 ## API
 
+### Loading
+
+| 方法 | 说明 | 参数 |
+|-----|-----|-----|
+| open | 打开加载框 | `(params?: LoadingInstanceProps) => ILoadingInstance` |
+| close | 关闭加载框 | `() => void` |
+| getInstance | 获取加载框实例 | `() => ILoadingInstance \| null` |
+| useLoading | React Hook | `(initialState?) => { isLoading, openLoading, closeLoading }` |
+
 ### LoadingInstanceProps
 
-| 参数      | 说明                 | 类型                            | 默认值    |
-| --------- | -------------------- | ------------------------------- | --------- |
-| container | 加载框容器           | `ReactInstance`                 | `body`    |
-| delay     | 延迟显示加载框毫秒数 | `number`                        | `0`       |
-| tip       | 加载提示文字         | `string`                        | -         |
-| size      | 加载图标大小         | `small` \| `default` \| `large` | `default` |
-| spinning  | 是否为加载中状态     | `boolean`                       | `true`    |
-| indicator | 自定义加载指示符     | `ReactNode`                     | -         |
-
-### Methods
-
-| 方法名      | 说明                                     | 参数类型                                                               |
-| ----------- | ---------------------------------------- | ---------------------------------------------------------------------- |
-| open        | 打开加载框                               | `(params?: LoadingInstanceProps) => ILoadingInstance`                  |
-| close       | 关闭加载框                               | `() => void`                                                           |
-| getInstance | 获取加载框实例                           | `() => ILoadingInstance \| null`                                       |
-| useLoading  | React Hook，用于在函数组件中使用加载状态 | `(initialState?: boolean) => { isLoading, openLoading, closeLoading }` |
+| 参数 | 说明 | 类型 | 默认值 |
+|-----|-----|-----|-------|
+| container | 加载框容器 | `ReactInstance` | `body` |
+| delay | 延迟显示毫秒数 | `number` | `0` |
+| tip | 加载提示文字 | `string` | - |
+| size | 加载图标大小 | `'small' \| 'default' \| 'large'` | `'default'` |
+| spinning | 是否为加载中状态 | `boolean` | `true` |
+| indicator | 自定义加载指示符 | `ReactNode` | - |

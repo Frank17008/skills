@@ -1,68 +1,332 @@
----
-title: WordCloud 词云
-description: 一个高性能的词云可视化组件
-keywords: ['词云', 'WordCloud', '可视化']
-demo:
-  cols: 2
-tocDepth: 3
-nav:
-  title: 组件
-  path: /components
-group:
-  title: 数据展示
----
+# WordCloud
 
-# WordCloud 词云
+词云可视化组件，基于 Canvas 高性能渲染，支持交互事件和丰富的自定义样式选项。
 
-词云组件用于可视化文本数据，根据词语的权重以不同大小显示在画布上。支持多种自定义配置，如形状、颜色、旋转等。
+## 基础用法
 
-## 组件特性
+```tsx
+import { WordCloud, type WordCloudProps } from '@pointcloud/pcloud-components';
 
-- 📊 基于 Canvas 的高性能渲染
-- 🎨 丰富的自定义样式选项
-- 🖱️ 完整的交互事件支持
-- 📱 自适应容器大小
-- 🔍 支持缩放和高分屏适配
-- 💫 平滑的动画过渡效果
+export default () => {
+  const words: WordCloudProps['list'] = [
+    ['New York', 12],
+    ['Los Angeles', 12],
+    ['Chicago', 22],
+    ['Houston', 22],
+    ['Phoenix', 22],
+    ['Philadelphia', 22],
+    ['San Antonio', 22],
+    ['San Diego', 22],
+    ['Dallas', 22],
+    ['San Jose', 22],
+    ['Austin', 22],
+    ['Jacksonville', 22],
+    ['San Francisco', 22],
+    ['Columbus', 22],
+    ['Charlotte', 26],
+    ['Indianapolis', 22],
+    ['Fort Worth', 24],
+    ['Seattle', 22],
+    ['Denver', 22],
+    ['Washington', 22],
+    ['Boston', 22],
+    ['El Paso', 21],
+    ['Detroit', 22],
+    ['Nashville', 22],
+    ['Portland', 22],
+    ['Oklahoma City', 22],
+    ['Las Vegas', 22],
+    ['Memphis', 22],
+    ['Louisville', 23],
+    ['Baltimore', 15],
+    ['Milwaukee', 22],
+    ['Albuquerque', 10],
+    ['Tucson', 14],
+    ['Fresno', 20],
+    ['Sacramento', 22],
+    ['Long Beach', 22],
+    ['Kansas City', 22],
+    ['Mesa', 21],
+    ['Virginia Beach', 22],
+    ['Atlanta', 12],
+    ['Colorado Springs', 11],
+    ['Omaha', 12],
+    ['Raleigh', 22],
+    ['Miami', 22],
+    ['Oakland', 13],
+    ['Minneapolis', 22],
+    ['Tulsa', 22],
+    ['Arlington', 14],
+    ['New Orleans', 22],
+    ['Bakersfield', 22],
+    ['Tampa', 22],
+  ];
 
-## 代码演示
+  return <WordCloud list={words} />;
+};
+```
 
-### 基础用法
+## 交互事件
 
-最简单的词云展示，展示一组词语及其权重。
+```tsx
+import { WordCloud, type WordCloudProps } from '@pointcloud/pcloud-components';
 
-<code src="./demos/demo1.tsx"></code>
+export default () => {
+  const words: WordCloudProps['list'] = [
+    ['New York', 12],
+    ['Los Angeles', 12],
+    ['Chicago', 22],
+    ['Houston', 22],
+    ['Phoenix', 22],
+    ['Philadelphia', 22],
+    ['San Antonio', 22],
+    ['San Diego', 22],
+    ['Dallas', 22],
+    ['San Jose', 22],
+    ['Austin', 22],
+    ['Jacksonville', 22],
+    ['San Francisco', 22],
+    ['Columbus', 22],
+    ['Charlotte', 26],
+    ['Indianapolis', 22],
+    ['Fort Worth', 24],
+    ['Seattle', 22],
+    ['Denver', 22],
+    ['Washington', 22],
+    ['Boston', 22],
+    ['El Paso', 21],
+    ['Detroit', 22],
+    ['Nashville', 22],
+    ['Portland', 22],
+    ['Oklahoma City', 22],
+    ['Las Vegas', 22],
+    ['Colorado Springs', 11],
+    ['Omaha', 12],
+    ['Raleigh', 22],
+    ['Miami', 22],
+    ['Oakland', 13],
+  ];
 
-### 交互事件
+  const onClick = (item, diemension, event) => {
+    console.info(item, diemension, event);
+    alert('点击了');
+  };
 
-支持鼠标悬浮提示和点击回调。
+  return <WordCloud list={words} tooltip={false} onClick={onClick} />;
+};
+```
 
-<code src="./demos/demo2.tsx"></code>
+## 自定义样式
 
-### 自定义样式
+```tsx
+import { WordCloud, type WordCloudProps } from '@pointcloud/pcloud-components';
+import { useCallback, useState } from 'react';
 
-通过 options 属性自定义词云的外观，包括形状、颜色、字体等。
+const fonts = ['Microsoft YaHei', 'Arial', 'Times New Roman', 'Courier New', 'Georgia'];
+const colors = ['random-dark', 'random-light', '#1890ff', '#f5222d', '#52c41a', '#722ed1'];
+const shapes = ['circle', 'cardioid', 'diamond', 'triangle-forward', 'triangle', 'pentagon', 'star'];
 
-<code src="./demos/demo3.tsx"></code>
+export default () => {
+  const [options, setOptions] = useState<WordCloudProps['options']>({
+    fontWeight: 'bold',
+    color: 'random-dark',
+    fontFamily: 'Microsoft YaHei',
+    backgroundColor: '#ffffff',
+    minSize: 12,
+    gridSize: 8,
+    weightFactor: 5,
+    rotateRatio: 0.5,
+    drawOutOfBound: false,
+    shrinkToFit: true,
+    shape: 'circle',
+    minRotation: -Math.PI / 4,
+    maxRotation: Math.PI / 2,
+    rotationSteps: 4,
+    shuffle: true,
+  });
+
+  const words: WordCloudProps['list'] = [
+    ['New York', 32],
+    ['Los Angeles', 28],
+    ['Chicago', 26],
+    ['Houston', 24],
+    ['Phoenix', 22],
+    ['Philadelphia', 22],
+    ['San Antonio', 20],
+    ['San Diego', 20],
+    ['Dallas', 18],
+    ['San Jose', 18],
+    ['Austin', 18],
+    ['Jacksonville', 16],
+    ['San Francisco', 16],
+    ['Columbus', 16],
+    ['Charlotte', 26],
+    ['Indianapolis', 14],
+    ['Fort Worth', 24],
+    ['Seattle', 14],
+    ['Denver', 14],
+    ['Washington', 12],
+    ['Boston', 12],
+    ['El Paso', 12],
+    ['Detroit', 12],
+    ['Nashville', 12],
+    ['Portland', 10],
+    ['Oklahoma City', 10],
+    ['Las Vegas', 10],
+  ];
+
+  const handleOptionChange = useCallback(<T extends keyof NonNullable<WordCloudProps['options']>>(key: T, value: NonNullable<WordCloudProps['options']>[T]) => {
+    setOptions((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  }, []);
+
+  const containerStyle: React.CSSProperties = {
+    padding: 24,
+    backgroundColor: '#f0f2f5',
+  };
+
+  const controlStyle: React.CSSProperties = {
+    marginBottom: 16,
+    display: 'flex',
+    gap: 8,
+    flexWrap: 'wrap',
+  };
+
+  const buttonStyle: React.CSSProperties = {
+    padding: '4px 12px',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: '#d9d9d9',
+    borderRadius: 4,
+    backgroundColor: '#fff',
+    cursor: 'pointer',
+    transition: 'all 0.3s',
+  };
+
+  const activeButtonStyle: React.CSSProperties = {
+    ...buttonStyle,
+    borderColor: '#1890ff',
+    color: '#1890ff',
+  };
+
+  return (
+    <div style={containerStyle}>
+      <div style={controlStyle}>
+        <div style={{ marginRight: 16 }}>
+          <div style={{ marginBottom: 8 }}>形状：</div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {shapes.map((shape) => (
+              <button
+                type="button"
+                key={shape}
+                onClick={() => handleOptionChange('shape', shape)}
+                style={options?.shape === shape ? activeButtonStyle : buttonStyle}
+              >
+                {shape}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={controlStyle}>
+        <div style={{ marginRight: 16 }}>
+          <div style={{ marginBottom: 8 }}>颜色：</div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {colors.map((color) => (
+              <button
+                type="button"
+                key={color}
+                onClick={() => handleOptionChange('color', color)}
+                style={options?.color === color ? activeButtonStyle : buttonStyle}
+              >
+                {color === 'random-dark' ? '随机深色' : color === 'random-light' ? '随机浅色' : color}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={controlStyle}>
+        <div style={{ marginRight: 16 }}>
+          <div style={{ marginBottom: 8 }}>字体：</div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {fonts.map((font) => (
+              <button
+                type="button"
+                key={font}
+                onClick={() => handleOptionChange('fontFamily', font)}
+                style={options?.fontFamily === font ? activeButtonStyle : buttonStyle}
+              >
+                {font}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={controlStyle}>
+        <div style={{ marginRight: 16 }}>
+          <div style={{ marginBottom: 8 }}>大小：</div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {[3, 5, 8, 10].map((size) => (
+              <button
+                type="button"
+                key={size}
+                onClick={() => handleOptionChange('weightFactor', size)}
+                style={options?.weightFactor === size ? activeButtonStyle : buttonStyle}
+              >
+                {size === 3 ? '小' : size === 5 ? '中' : size === 8 ? '大' : '特大'}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={controlStyle}>
+        <div style={{ marginRight: 16 }}>
+          <div style={{ marginBottom: 8 }}>旋转：</div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {[0, 0.3, 0.5, 0.8].map((ratio) => (
+              <button
+                type="button"
+                key={ratio}
+                onClick={() => handleOptionChange('rotateRatio', ratio)}
+                style={options?.rotateRatio === ratio ? activeButtonStyle : buttonStyle}
+              >
+                {ratio === 0 ? '无' : ratio === 0.3 ? '少' : ratio === 0.5 ? '中' : '多'}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ height: 500, border: '1px solid #d9d9d9', borderRadius: 4, overflow: 'hidden' }}>
+        <WordCloud list={words} options={options} />
+      </div>
+    </div>
+  );
+};
+```
 
 ## API
 
-### WordCloud
+### WordCloudProps
 
 | 参数      | 说明                                       | 类型                                                                        | 默认值       |
-| --------- | ------------------------------------------ | --------------------------------------------------------------------------- | ------------ |
+|---------|------------------------------------------| --------------------------------------------------------------------------- | ------------ |
 | list      | 词云数据列表，每项为 `[word, weight]` 格式 | `[string, number][]`                                                        | `[]`         |
 | className | 自定义类名                                 | `string`                                                                    | -            |
 | tooltip   | 是否显示悬浮提示                           | `boolean`                                                                   | `true`       |
 | onClick   | 点击词语时的回调函数                       | `(item: [string, number], dimension: Dimension, event: MouseEvent) => void` | -            |
-| options   | 词云配置项，见下方 Options                 | `Partial<WordCloud2.Options>`                                               | 见下方默认值 |
+| options   | 词云配置项                                 | `Partial<WordCloud2.Options>`                                               | 见下方默认值 |
 
 ### Options
 
-以下是常用的配置项，完整配置项请参考 [wordcloud2.js](https://github.com/timdream/wordcloud2.js) 文档。
-
 | 参数            | 说明                   | 类型                                                                                                      | 默认值                |
-| --------------- | ---------------------- | --------------------------------------------------------------------------------------------------------- | --------------------- |
+|---------------|----------------------| --------------------------------------------------------------------------------------------------------- | --------------------- |
 | shape           | 词云形状               | `'circle' \| 'cardioid' \| 'diamond' \| 'triangle-forward' \| 'triangle' \| 'pentagon' \| 'star'`         | `'circle'`            |
 | backgroundColor | 背景颜色               | `string`                                                                                                  | `'#ffffff'`           |
 | fontFamily      | 字体                   | `string`                                                                                                  | `'Arial, sans-serif'` |
@@ -80,50 +344,15 @@ group:
 | maxRotation     | 最大旋转角度           | `number`                                                                                                  | `Math.PI/4`           |
 | shuffle         | 是否打乱词语顺序       | `boolean`                                                                                                 | `true`                |
 
-### Dimension 类型
-
-点击回调函数中的 dimension 参数包含以下属性：
+### Dimension
 
 | 属性 | 说明          | 类型     |
-| ---- | ------------- | -------- |
+|-----|-------------|--------|
 | x    | 词语的 x 坐标 | `number` |
 | y    | 词语的 y 坐标 | `number` |
 | w    | 词语的宽度    | `number` |
 | h    | 词语的高度    | `number` |
 
-## 注意事项
+## 组件依赖
 
-1. 组件会自动适应容器大小，请确保父容器有明确的宽高
-2. 高分辨率屏幕上会自动适配设备像素比，保证清晰度
-3. 为了获得更好的性能，建议控制数据量在合理范围内
-4. 如果使用自定义颜色函数，请确保返回合法的颜色值
-
-## FAQ
-
-### 1. 词云显示模糊怎么办？
-
-组件已经内置了高分辨率屏幕适配，如果仍然模糊，可以：
-
-- 检查容器大小是否合适
-- 调整 `gridSize` 参数
-- 适当增加 `weightFactor` 值
-
-### 2. 如何控制词语的大小范围？
-
-可以通过以下参数调整：
-
-- `weightFactor`: 控制整体字体大小
-- `minSize`: 设置最小字体大小
-- 调整输入数据中的权重值范围
-
-### 3. 如何实现渐变色文字？
-
-可以通过 `color` 参数传入自定义函数：
-
-```ts
-options={{
-  color: (word, weight, fontSize) => {
-    return weight > 20 ? '#f52443' : weight > 10 ? '#0088ff' : '#00aa00';
-  }
-}}
-```
+`wordcloud2.js`

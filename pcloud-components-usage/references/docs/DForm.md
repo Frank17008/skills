@@ -1,131 +1,150 @@
----
-title: DForm
-description: 基于 antd 4.24.10 Form 的二次封装组件
-tocDepth: 2
-nav:
-  title: 组件
-  path: /components
-group:
-  title: 业务组件
----
-
 # DForm 表单组件
 
-DForm 是基于 Ant Design Form 组件的增强封装，提供了更简洁的表单配置方式和丰富的内置表单控件，支持多种布局模式和动态表单项管理，大大简化了复杂表单的开发工作。
-
-## 组件特性
-
-- 🧩 内置丰富的表单控件，支持 input、select、button 等常用元素
-- 🎨 灵活的表单项配置，支持 items 数组和 children 两种方式添加表单项
-- ⚙️ 强大的自定义能力，支持表单项自定义渲染和默认属性设置
-- 📐 多种布局模式，新增行内垂直布局和栅格布局方式
-- 🔄 动态表单管理，支持运行时增删表单项
+基于 Ant Design Form 的增强封装，支持 items 数组配置、内置 30+ 表单控件、多种布局模式和动态表单项管理。
 
 ## 基础用法
 
-<code src="./demos/basicDemo.tsx" title="基础用法" description="通过items添加表单项"></code>
+```tsx
+import React from 'react';
+import { DForm, DFormProps } from '@pointcloud/pcloud-components';
 
-## 内置组件
+const items: DFormProps['items'] = [
+  { name: 'username', label: '用户名', renderType: 'input', formItemProps: { rules: [{ required: true }] } },
+  { name: 'password', label: '密码', renderType: 'password' },
+  {
+    name: 'sex',
+    label: '性别',
+    renderType: 'select',
+    options: [
+      { label: '男', value: '1' },
+      { label: '女', value: '2' },
+    ],
+  },
+  { name: 'age', label: '年龄', renderType: 'inputNumber' },
+  { name: 'submit', label: '提交', renderType: 'button', htmlType: 'submit', type: 'primary' },
+  { name: 'reset', label: '重置', renderType: 'button', htmlType: 'reset' },
+];
 
-<code src="./demos/internalRenderDemo.tsx" title="内置组件" description="renderType所支持的内置组件"></code>
-
-## 自定义表单项渲染类型
-
-<code src="./demos/customRenderDemo.tsx" title="自定义表单项渲染类型" description="通过 items 的 renderType 与 render 属性实现自定义渲染类型,renderType='other'时渲染结果会包含在 Form.Item中"></code>
-
-## 设置表单项
-
-<code src="./demos/columnsAndChildrenDemo.tsx" title="设置表单项" description="items与children都可以设置表单项,如果同时存在则children设置的表单项会排在前面"></code>
-
-## 表单项默认值
-
-<code src="./demos/defaultItemPropsDemo.tsx" title="表单项默认值" description="可以通过defaultItemProps统一设置表单项的默认值(只对items添加的表单项生效,且会被items中的同名属性值覆盖)" ></code>
+export default function BasicDemo() {
+  return <DForm items={items} />;
+}
+```
 
 ## 布局方式
 
-<code src="./demos/layoutDemo.tsx" title="布局方式" description="新增了行内垂直布局方式inlineVertical和grid栅格布局方式"></code>
+支持 `horizontal`、`vertical`、`inline`、`inlineVertical`、`grid` 五种布局。
 
-## 动态设置字段
+```tsx
+import React, { useState } from 'react';
+import { Radio } from 'antd';
+import { DForm, DFormProps } from '@pointcloud/pcloud-components';
 
-<code src="./demos/dynamicItemsDemo.tsx" title="动态设置字段" description="通过ref属性配合useForm可以直接操作组件内部的表单项列表，而不用通过外部state手动管理"></code>
+const items: DFormProps['items'] = [
+  { name: 'username', label: '用户名', renderType: 'input' },
+  { name: 'password', label: '密码', renderType: 'password' },
+];
 
-## 条件渲染
+export default function LayoutDemo() {
+  const [layout, setLayout] = useState<DFormProps['layout']>('horizontal');
 
-<code src="./demos/shouldUpdateDemo.tsx" title="条件渲染" description="通过formItemProps.shouldUpdate实现根据表单其他字段的值动态控制表单项的渲染"></code>
+  return (
+    <div>
+      <Radio.Group value={layout} onChange={(e) => setLayout(e.target.value)}>
+        <Radio value="horizontal">水平</Radio>
+        <Radio value="vertical">垂直</Radio>
+        <Radio value="inline">行内</Radio>
+        <Radio value="inlineVertical">行内垂直</Radio>
+        <Radio value="grid">栅格布局</Radio>
+      </Radio.Group>
+      <DForm style={{ marginTop: 16 }} items={items} layout={layout} />
+    </div>
+  );
+}
+```
+
+## 动态表单项
+
+通过 ref 的 setItems 方法动态增删表单项。
+
+```tsx
+import { useRef } from 'react';
+import { DForm, DFormProps, DFormRefProps, DItemProps } from '@pointcloud/pcloud-components';
+
+const items: DFormProps['items'] = [
+  { name: 'username', label: '用户名', renderType: 'input' },
+  { name: 'submit', label: '提交', renderType: 'button', htmlType: 'submit', type: 'primary' },
+];
+
+export default function DynamicItemsDemo() {
+  const dFormRef = useRef<DFormRefProps>();
+
+  const addField = () => {
+    dFormRef.current?.setItems((list: DItemProps[]) => [
+      ...list,
+      { name: 'newField', label: '新字段', renderType: 'input' },
+    ]);
+  };
+
+  return (
+    <div>
+      <button onClick={addField}>添加字段</button>
+      <DForm ref={dFormRef} items={items} />
+    </div>
+  );
+}
+```
 
 ## API
 
 ### DFormProps
 
-| 参数             | 说明                                                                    | 类型                                                                   | 默认值       | 版本 |
-| :--------------- | :---------------------------------------------------------------------- | :--------------------------------------------------------------------- | :----------- | :--- |
-| items            | 表单项数组,可以通过数组的形式添加表单项                                 | `DItemProps[]`                                                         | -            |      |
-| defaultItemProps | 统一设置 items 的默认属性                                               | `DItemProps`                                                           | -            |      |
-| layout           | 布局方式                                                                | `'inline' \| 'horizontal' \| 'vertical' \| 'inlineVertical' \| 'grid'` | `horizontal` |      |
-| children         | children 方式添加表单项,如果同时设置了 items，则 children 在 items 下面 | `ReactNode \| ReactNode[]`                                             | -            |      |
-| className        | 额外的 className                                                        | `string`                                                               | -            |      |
+| 参数 | 说明 | 类型 | 默认值 |
+|-----|-----|-----|-------|
+| items | 表单项数组 | `DItemProps[]` | - |
+| defaultItemProps | 统一设置 items 的默认属性 | `DItemProps` | - |
+| layout | 布局方式 | `'inline' \| 'horizontal' \| 'vertical' \| 'inlineVertical' \| 'grid'` | `horizontal` |
+| children | children 方式添加表单项，如果同时设置了 items，则 children 在 items 下面 | `ReactNode \| ReactNode[]` | - |
+| className | 额外的 className | `string` | - |
 
-其他属性继承 antd Form 组件，详见[Form API](https://4x-ant-design.antgroup.com/components/form-cn/#Form)
+继承 antd Form 所有属性。
 
 ### DItemProps
 
-| 参数          | 说明                                                                                          | 类型                                                                                                   | 默认值 |
-| :------------ | :-------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------- | :----- |
-| renderType    | [渲染类型](#RenderType)                                                                       | `RenderType`                                                                                           | -      |
-| render        | 自定义渲染函数, 仅 renderType 等于 custom、other 时生效                                       | `(props: any, formItemProps: FormItemProps, allProps?: DItemProps) => ReactNode`                       | -      |
-| label         | 同 antd Form.Item 的 label                                                                    | `ReactNode`                                                                                            | -      |
-| name          | 同 antd Form.Item 的 name                                                                     | [NamePath](https://4x-ant-design.antgroup.com/components/form-cn/#NamePath)                            | -      |
-| formItemProps | [Antd Form.Item 的其他属性](https://4x-ant-design.antgroup.com/components/form-cn/#Form.Item) | `FormItemProps & { grid?: GridColProps; shouldUpdate?: boolean \| (prev: any, curr: any) => boolean }` | -      |
-| children      | 子元素，用于 custom/other 类型                                                                | `ReactNode`                                                                                            | -      |
+| 参数 | 说明 | 类型 |
+|-----|-----|-----|
+| renderType | 渲染类型，见 RenderType 表 | `RenderType` |
+| render | 自定义渲染函数，仅 renderType 等于 custom、other 时生效 | `(props, formItemProps, allProps?) => ReactNode` |
+| label | 同 antd Form.Item 的 label | `ReactNode` |
+| name | 同 antd Form.Item 的 name | `NamePath` |
+| formItemProps | Form.Item 其他属性，支持 `shouldUpdate` 条件渲染 | `FormItemProps & { grid?: GridColProps; shouldUpdate?: boolean \| (prev, curr) => boolean }` |
+| children | 子元素，用于 custom/other 类型 | `ReactNode` |
+| options | select 等选项 | `{ label, value }[]` |
 
-DItemProps 的其他属性根据 renderType 的值来继承; 比如 renderType 为 input 时,会继承 antd Input 的所有属性, 为 select 时,会继承 antd Select 的所有属性, 以此类推;
+DItemProps 的其他属性根据 renderType 继承 antd 对应组件属性。
 
 ### RenderType
 
-| RenderType    | 渲染组件                     | 说明                          |
-| :------------ | :--------------------------- | :---------------------------- |
-| dInput        | `<DInput />`                 | 增强版输入框组件              |
-| ipAddress     | `<IPAddress />`              | IP 地址输入组件               |
-| input         | `<Input />`                  | antd 输入框组件               |
-| textArea      | `<Input.TextArea />`         | antd 文本域组件               |
-| password      | `<Input.Password />`         | antd 密码输入组件             |
-| inputNumber   | `<InputNumber />`            | antd 数字输入框组件           |
-| autoComplete  | `<AutoComplete />`           | antd 自动完成组件             |
-| dSelect       | `<DSelect />`                | 增强版下拉选择组件            |
-| select        | `<Select />`                 | antd 下拉选择组件             |
-| dCascader     | `<DCascader />`              | 增强版级联选择组件            |
-| cascader      | `<Cascader />`               | antd 级联选择组件             |
-| dTreeSelect   | `<DTreeSelect />`            | 增强版树选择组件              |
-| treeSelect    | `<TreeSelect />`             | antd 树选择组件               |
-| datePicker    | `<DatePicker />`             | antd 日期选择器组件           |
-| dRangePicker  | `<DRangePicker />`           | 增强版日期范围选择器组件      |
-| timePicker    | `<TimePicker />`             | antd 时间选择器组件           |
-| rangePicker   | `<DatePicker.RangePicker />` | antd 日期范围选择器组件       |
-| mentions      | `<Mentions />`               | antd 提及组件                 |
-| checkbox      | `<Checkbox />`               | antd 复选框组件               |
-| checkboxGroup | `<Checkbox.Group />`         | antd 复选框组组件             |
-| radio         | `<Radio />`                  | antd 单选框组件               |
-| radioGroup    | `<Radio.Group />`            | antd 单选框组组件             |
-| rate          | `<Rate />`                   | antd 评分组件                 |
-| slider        | `<Slider />`                 | antd 滑动输入条组件           |
-| switch        | `<Switch />`                 | antd 开关组件                 |
-| transfer      | `<Transfer />`               | antd 穿梭框组件               |
-| upload        | `<Upload />`                 | antd 上传组件                 |
-| dUpload       | `<DUpload />`                | 增强版上传组件                |
-| button        | `<Button />`                 | antd 按钮组件                 |
-| divider       | `<Divider />`                | antd 分割线组件               |
-| custom        | 自定义渲染                   | 渲染结果不包含在 Form.Item 中 |
-| other         | 自定义渲染                   | 渲染结果包含在 Form.Item 中   |
+| renderType | 渲染组件 | renderType | 渲染组件 |
+|-----------|---------|-----------|---------|
+| input | Input | dInput | DInput |
+| password | Input.Password | textArea | Input.TextArea |
+| inputNumber | InputNumber | select | Select |
+| dSelect | DSelect | cascader | Cascader |
+| dCascader | DCascader | treeSelect | TreeSelect |
+| dTreeSelect | DTreeSelect | datePicker | DatePicker |
+| dRangePicker | DRangePicker | timePicker | TimePicker |
+| rangePicker | DatePicker.RangePicker | checkbox | Checkbox |
+| checkboxGroup | Checkbox.Group | radio | Radio |
+| radioGroup | Radio.Group | switch | Switch |
+| slider | Slider | rate | Rate |
+| upload | Upload | dUpload | DUpload |
+| transfer | Transfer | mentions | Mentions |
+| autoComplete | AutoComplete | ipAddress | IPAddress |
+| button | Button | divider | Divider |
+| custom | 自定义(无Form.Item) | other | 自定义(有Form.Item) |
 
-### ref(组件引用)
+### DFormRefProps
 
-ref 可以直接操作内部状态,目前仅支持通过 setItems 方法更新内部表单项列表,setItems 方法接受一个回调方法，该方法接受一个包含当前组件所有表单项的列表，返回一个新的表单项列表,返回值可以是普通数组，也可以是一个 Promise
-
-```
-// 回调函数fn定义
-const fn = (items: DItemProps[]) => DItemProps[] | Promise<DItemProps[]
-// setItems定义
-const setItems = (items: DItemProps[] | fn) => void
-// ref定义
-type ref = React.Ref<{ setItems }>
-```
+| 方法 | 说明 | 参数 |
+|-----|-----|-----|
+| setItems | 更新内部表单项列表 | `items: DItemProps[] \| (prev: DItemProps[]) => DItemProps[]` |

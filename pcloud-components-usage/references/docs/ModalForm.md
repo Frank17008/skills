@@ -1,44 +1,73 @@
----
-title: ModalForm
-nav:
-  title: 组件
-  path: /components
-group:
-  title: 组合组件
----
+# ModalForm 表单弹窗
 
-# ModalForm 弹窗表单组件
+融合弹窗和表单的组合组件，基于 DModal 和 DForm 封装。
 
-ModalForm 是一个融合了弹窗和表单功能的组合组件，基于 DModal 和 DForm 封装，提供了一站式的弹窗表单解决方案，简化了弹窗表单的开发流程，适用于各种需要弹窗填写表单的业务场景。
+## 基础用法
 
-## 组件特性
+```tsx
+import { ModalForm } from '@pointcloud/pcloud-components';
+import { Button } from 'antd';
+import { useState } from 'react';
 
-- 🔄 一体化解决方案，融合弹窗和表单功能
-- ✅ 自动表单校验，提交时自动验证表单数据
-- 🎯 智能状态管理，禁用表单时自动隐藏底部操作按钮
-- 📐 灵活布局支持，支持表单的多种布局方式
-- 🧩 内容扩展性强，支持弹窗内嵌其他子级元素
-- ⚙️ 集成表单状态管理，支持动态管理表单值
-- 🔒 内部 loading 状态锁定, 防止多次点击及误操作
+export default () => {
+  const [open, setOpen] = useState(false);
 
-## 基本使用
+  const formItems = [
+    { name: 'username', label: '用户名', renderType: 'input', formItemProps: { rules: [{ required: true }] } },
+    { name: 'password', label: '密码', renderType: 'password' },
+  ];
 
-<code src="./demos/demo1.tsx" ></code>
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>打开弹窗</Button>
+      <ModalForm
+        formProps={{ items: formItems }}
+        modalProps={{
+          open,
+          title: '表单弹窗',
+          onCancel: () => setOpen(false),
+          onOk: (values) => {
+            console.info(values);
+            setOpen(false);
+          },
+        }}
+      />
+    </>
+  );
+};
+```
 
-## 回填数据、禁用表单
+## 回填数据
 
-<code src="./demos/demo2.tsx" title="回填数据" description="通过`values`属性进行`Form`的内部状态管理, 不同于`initialValues`, `values`更贴合使用场景,可以使用`useState`进行动态更新"></code>
+通过 formProps.values 实现受控的表单值管理。
 
-## 布局方式
+```tsx
+import { ModalForm } from '@pointcloud/pcloud-components';
+import { Button } from 'antd';
+import { useState } from 'react';
 
-<code src="./demos/demo3.tsx" ></code>
+export default () => {
+  const [open, setOpen] = useState(false);
+  const [values, setValues] = useState({ username: '张三' });
+
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>编辑</Button>
+      <ModalForm
+        formProps={{ items: [{ name: 'username', label: '用户名', renderType: 'input' }], values }}
+        modalProps={{ open, title: '编辑', onCancel: () => setOpen(false), onOk: () => setOpen(false) }}
+      />
+    </>
+  );
+};
+```
 
 ## API
 
 ### ModalFormProps
 
-| 参数       | 说明                             | 类型                                                | 默认值 |
-| ---------- | -------------------------------- | --------------------------------------------------- | ------ |
-| modalProps | 弹窗属性，支持 DModal 的所有属性 | [DModalProps](/components/d-modal#dmodalprops)     | -      |
-| formProps  | 表单属性，支持 DForm 的所有属性  | [DFormProps](/components/d-form#dformprops)            | -      |
-| children   | 子元素                           | `ReactNode`                                         | -      |
+| 参数 | 说明 | 类型 |
+|-----|-----|-----|
+| modalProps | 弹窗属性，支持 DModal 的所有属性 | `DModalProps` |
+| formProps | 表单属性，支持 DForm 的所有属性 | `DFormProps` |
+| children | 子元素 | `ReactNode` |
